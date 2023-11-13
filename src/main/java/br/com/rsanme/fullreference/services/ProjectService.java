@@ -6,6 +6,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Service
 public class ProjectService {
 
-    private ProjectRepository repository;
+    private final ProjectRepository repository;
 
     public ProjectService(ProjectRepository repository) {
         this.repository = repository;
@@ -37,12 +38,17 @@ public class ProjectService {
 
     public Project create(Project project) {
         findByName(project);
+
+        project.setCreatedAt(OffsetDateTime.now());
         return repository.save(project);
     }
 
     public Project update(Project project) {
-        findById(project.getId());
+        Project toUpdate = findById(project.getId());
         findByName(project);
+
+        project.setCreatedAt(toUpdate.getCreatedAt());
+        project.setUpdatedAt(OffsetDateTime.now());
 
         return repository.save(project);
     }
