@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,6 +35,10 @@ public class Project {
 
     @UpdateTimestamp
     private OffsetDateTime updatedAt;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Task> tasks = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
