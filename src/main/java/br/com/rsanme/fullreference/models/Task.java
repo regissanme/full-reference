@@ -16,7 +16,11 @@ import java.util.Objects;
  * Hora: 11:41
  */
 @Entity
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor @ToString
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Task {
 
     @Id
