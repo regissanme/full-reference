@@ -35,8 +35,8 @@ Criar uma referencia completa para desenvolvimento de uma API REST, utilizando o
 - Postman para testes dos endpoints   
 
 ###  Documentação da API - OpenApi
-Para acessar a documentação da API, quando executando na máquina local, use o link:
-[Swagge](http://localhost:8080/swagger-ui/index.html#/)
+Para acessar a documentação da API, quando executando na máquina local, use o link:   
+[Swagger-ui](http://localhost:8080/swagger-ui/index.html#/) `http://localhost:8080/swagger-ui/index.html#/`
 
 
 
