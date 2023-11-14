@@ -3,6 +3,10 @@ package br.com.rsanme.fullreference.controllers;
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.services.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/project")
+@Tag(name = "API de projetos")
 public class ProjectController {
 
     private final ProjectService service;
@@ -25,29 +30,60 @@ public class ProjectController {
         this.service = service;
     }
 
+    @Operation(summary = "Busca todos os projetos.", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fez a busca com sucesso."),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a busca dos dados.")
+    })
     @GetMapping
     public ResponseEntity<List<Project>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @Operation(summary = "Busca um projeto pelo Id.", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fez a busca pelo Id com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos."),
+            @ApiResponse(responseCode = "404", description = "Entidade não encontrada com id informado."),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a busca dos dados.")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Project> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @Operation(summary = "Salva um novo projeto.", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Entidade salva com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Entidade já cadastrada."),
+            @ApiResponse(responseCode = "500", description = "Erro ao salvar a entidade na base de dados.")
+    })
     @PostMapping
     public ResponseEntity<Project> create(@RequestBody @Valid ProjectCreateDto inputDto) {
         return ResponseEntity.ok(service.create(inputDto.toModel()));
     }
 
+    @Operation(summary = "Atualiza um projeto pelo Id.", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Entidade atualizada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos."),
+            @ApiResponse(responseCode = "404", description = "Entidade não encontrada com id informado."),
+            @ApiResponse(responseCode = "500", description = "Erro ao salvar a entidade na base de dados.")
+    })
     @PutMapping
     public ResponseEntity<Project> update(@RequestBody @Valid Project project) {
         return ResponseEntity.ok(service.update(project));
     }
 
+    @Operation(summary = "Exclui um projeto pelo Id.", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Entidade excluída com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Entidade não encontrada com id informado."),
+            @ApiResponse(responseCode = "500", description = "Erro ao excluir a entidade na base de dados.")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(String.format("Projeto com id: %s excluído com sucesso!", id));
     }
 }
