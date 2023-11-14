@@ -1,6 +1,7 @@
 package br.com.rsanme.fullreference.dtos;
 
 import br.com.rsanme.fullreference.models.Project;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor @NoArgsConstructor
 public class ProjectCreateDto {
 
+    @NotBlank
     private String name;
+
     private String description;
 
     public Project toModel() {
