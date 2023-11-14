@@ -6,8 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class FullReferenceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void whenStartApplicationTheContextLoads() {
+        FullReferenceApplication.main(new String[]{});
+    }
 
 }
