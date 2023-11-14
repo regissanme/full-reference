@@ -1,5 +1,7 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
+import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.repositories.ProjectRepository;
 import jakarta.persistence.EntityExistsException;
@@ -31,7 +33,7 @@ public class ProjectService {
 
     public Project findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new CustomEntityNotFoundException(
                         "Não foi encontrado nenhum projeto com o id: " + id
                 ));
     }
@@ -64,7 +66,7 @@ public class ProjectService {
         Optional<Project> byName = repository.findByName(project.getName());
 
         if (byName.isPresent() && !byName.get().getId().equals(project.getId())) {
-            throw new EntityExistsException(
+            throw new CustomEntityAlreadyExists(
                     "Já existe um projeto cadastrado com o nome: " + project.getName());
         }
     }

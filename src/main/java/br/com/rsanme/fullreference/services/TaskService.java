@@ -1,5 +1,7 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
+import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.repositories.TaskRepository;
 import jakarta.persistence.EntityExistsException;
@@ -32,8 +34,8 @@ public class TaskService {
 
     public Task findById(Long id) {
         return repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Não foi encontrado nenhuma tarefa com o id: " + id)
+                () -> new CustomEntityNotFoundException(
+                        "Não foi encontrada nenhuma tarefa com o id: " + id)
         );
     }
 
@@ -80,7 +82,7 @@ public class TaskService {
         if (byName.isPresent()
                 && !byName.get().getId().equals(task.getId())
                 && task.getProject().getId().equals(byName.get().getProject().getId())) {
-            throw new EntityExistsException(
+            throw new CustomEntityAlreadyExists(
                     String.format("Já existe uma tarefa cadastrada com o nome: %s para o projeto %s",
                             task.getName(),
                             task.getProject().getName())
