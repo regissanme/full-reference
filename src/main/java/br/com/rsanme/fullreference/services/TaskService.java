@@ -33,7 +33,7 @@ public class TaskService {
     public Task findById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(
-                        "Nenhuma tarefa encontrada com o id: " + id)
+                        "Não foi encontrado nenhuma tarefa com o id: " + id)
         );
     }
 
@@ -77,9 +77,11 @@ public class TaskService {
 
         Optional<Task> byName = repository.findByName(task.getName());
 
-        if (byName.isPresent() && task.getProject().getId().equals(byName.get().getProject().getId())) {
+        if (byName.isPresent()
+                && !byName.get().getId().equals(task.getId())
+                && task.getProject().getId().equals(byName.get().getProject().getId())) {
             throw new EntityExistsException(
-                    String.format("Já existe uma tarefa com o nome %s cadastrada para o projeto %s",
+                    String.format("Já existe uma tarefa cadastrada com o nome: %s para o projeto %s",
                             task.getName(),
                             task.getProject().getName())
             );
