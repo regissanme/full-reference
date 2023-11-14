@@ -1,5 +1,7 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
+import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.repositories.TaskRepository;
@@ -41,7 +43,7 @@ class TaskServiceTest {
     private static final String TASK_DESCRIPTION = "Use java-jwt";
     public static final String TASK_NOTES = "Note 01";
     public static final String ERROR_MESSAGE_ALREADY_EXISTS = "Já existe uma tarefa cadastrada com o nome: Feature Spring Security with JWT para o projeto Full Reference";
-    private static final String ERROR_MESSAGE_NOT_FOUND = "Não foi encontrado nenhuma tarefa com o id: 1";
+    private static final String ERROR_MESSAGE_NOT_FOUND = "Não foi encontrada nenhuma tarefa com o id: 1";
 
     @InjectMocks
     private TaskService service;
@@ -106,7 +108,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.findById(ID))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
@@ -143,7 +145,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.create(toSave))
                 .hasMessage(ERROR_MESSAGE_ALREADY_EXISTS)
-                .isInstanceOf(EntityExistsException.class);
+                .isInstanceOf(CustomEntityAlreadyExists.class);
 
         verify(repository, times(1))
                 .findByName(anyString());
@@ -183,7 +185,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.update(task))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
@@ -206,7 +208,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.update(toUpdate))
                 .hasMessage(ERROR_MESSAGE_ALREADY_EXISTS)
-                .isInstanceOf(EntityExistsException.class);
+                .isInstanceOf(CustomEntityAlreadyExists.class);
 
         verify(repository, times(1))
                 .findByName(anyString());
@@ -236,7 +238,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.delete(ID))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
@@ -270,7 +272,7 @@ class TaskServiceTest {
 
         assertThatThrownBy(() -> service.completeTask(ID))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());

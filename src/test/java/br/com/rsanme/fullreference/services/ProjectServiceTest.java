@@ -1,10 +1,10 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
+import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.repositories.ProjectRepository;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,7 +101,7 @@ class ProjectServiceTest {
 
         assertThatThrownBy(() -> service.findById(ID))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
@@ -138,7 +138,7 @@ class ProjectServiceTest {
 
         assertThatThrownBy(() -> service.create(toSave))
                 .hasMessage(ERROR_MESSAGE_ALREADY_EXISTS)
-                .isInstanceOf(EntityExistsException.class);
+                .isInstanceOf(CustomEntityAlreadyExists.class);
 
         verify(repository, times(1))
                 .findByName(anyString());
@@ -178,7 +178,7 @@ class ProjectServiceTest {
 
         assertThatThrownBy(() -> service.update(project))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
@@ -200,7 +200,7 @@ class ProjectServiceTest {
 
         assertThatThrownBy(() -> service.update(toUpdate))
                 .hasMessage(ERROR_MESSAGE_ALREADY_EXISTS)
-                .isInstanceOf(EntityExistsException.class);
+                .isInstanceOf(CustomEntityAlreadyExists.class);
 
         verify(repository, times(1))
                 .findByName(anyString());
@@ -230,7 +230,7 @@ class ProjectServiceTest {
 
         assertThatThrownBy(() -> service.delete(ID))
                 .hasMessage(ERROR_MESSAGE_NOT_FOUND)
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(CustomEntityNotFoundException.class);
 
         verify(repository, times(1))
                 .findById(anyLong());
