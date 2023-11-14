@@ -32,7 +32,11 @@ Criar uma referencia completa para desenvolvimento de uma API REST, utilizando o
 - IntelliJ IDEA Community.
 - H2 Database.
 - Git para o versionamento do código.
-- Postman para testes dos endpoints
+- Postman para testes dos endpoints   
+
+###  Documentação da API - OpenApi
+Para acessar a documentação da API, quando executando na máquina local, use o link:
+[Swagge](http://localhost:8080/swagger-ui/index.html#/)
 
 
 
