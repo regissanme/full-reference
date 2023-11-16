@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -46,6 +47,7 @@ public class Task {
     private OffsetDateTime updatedAt;
 
     @ManyToOne
+    @JsonIgnore
     private Project project;
 
     @Override
