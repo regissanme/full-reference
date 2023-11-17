@@ -15,6 +15,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -56,6 +57,7 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -69,6 +71,7 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CustomEntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleCustomNotFoundException(
             CustomEntityNotFoundException ex, WebRequest request) {
 
@@ -83,6 +86,7 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CustomEntityAlreadyExists.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCustomAlreadyExistsException(
             CustomEntityAlreadyExists ex, WebRequest request) {
 
