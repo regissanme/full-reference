@@ -1,49 +1,28 @@
 package br.com.rsanme.fullreference.controllers;
 
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
+import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
-import br.com.rsanme.fullreference.repositories.ProjectRepository;
 import br.com.rsanme.fullreference.services.ProjectService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
-
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Projeto: full-reference
@@ -80,7 +59,7 @@ class ProjectControllerTest {
     private ProjectCreateDto projectCreateDto;
 
     @BeforeEach
-    void setUp()  {
+    void setUp() {
         RestAssuredMockMvc.standaloneSetup(controller, exceptionHandler);
         createInstances();
     }
@@ -149,9 +128,60 @@ class ProjectControllerTest {
     }
 
     @Test
-    void whenCreateThenReturnSuccess() throws Exception {
+    void whenCreateThenReturnSuccess() {
 
+        when(service.create(any(Project.class))).thenReturn(project);
 
+        given()
+                .body(projectCreateDto)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .post("project")
+                .then()
+                .log().everything()
+                .statusCode(CREATED.value());
+
+        verify(service).create(any(Project.class));
+        verifyNoMoreInteractions(service);
+
+    }
+
+    @Test
+    void whenCreateThenReturnBadRequest() {
+
+        given()
+                .body(new Project())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .post("project")
+                .then()
+                .log().everything()
+                .statusCode(BAD_REQUEST.value());
+
+        verify(service, never()).create(any(Project.class));
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void whenCreateThenReturnAlreadyExists() {
+
+        when(service.create(any(Project.class)))
+                .thenThrow(new CustomEntityAlreadyExists(ERROR_MESSAGE_ALREADY_EXISTS));
+
+        given()
+                .body(projectCreateDto)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .post("project")
+                .then()
+                .log().everything()
+                .statusCode(CONFLICT.value());
+
+        verify(service).create(any(Project.class));
+        verifyNoMoreInteractions(service);
     }
 
     @Test
