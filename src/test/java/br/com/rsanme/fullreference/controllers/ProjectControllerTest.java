@@ -1,7 +1,6 @@
 package br.com.rsanme.fullreference.controllers;
 
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
-import br.com.rsanme.fullreference.dtos.TaskUpdateDto;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler;
@@ -265,6 +264,18 @@ class ProjectControllerTest {
     @Test
     void whenDeleteThenReturnSuccess() {
 
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .delete("project/" + ID)
+                .then()
+                .apply(print())
+                .log().everything()
+                .statusCode(OK.value());
+
+        verify(service).delete(anyLong());
+        verifyNoMoreInteractions(service);
     }
 
     private void createInstances() {
