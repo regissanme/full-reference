@@ -40,8 +40,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,7 +101,52 @@ class ProjectControllerTest {
         verifyNoMoreInteractions(service);
     }
 
+    @Test
+    void whenFindByIdThenSuccess() throws Exception {
 
+        when(service.findById(1L)).thenReturn(project);
+
+        given()
+                .when()
+                .get("project/" + ID)
+                .then()
+                .log().everything()
+                .statusCode(OK.value());
+
+        verify(service).findById(anyLong());
+        verifyNoMoreInteractions(service);
+
+    }
+
+    @Test
+    void whenFindByIdThenReturnNotFound() throws Exception {
+
+        when(service.findById(1L)).thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+
+        given()
+                .when()
+                .get("project/" + 1L)
+                .then()
+                .log().everything()
+                .statusCode(NOT_FOUND.value());
+
+        verify(service).findById(anyLong());
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void whenFindByIdThanReturnBadRequest() {
+
+        given()
+                .when()
+                .get("project/null")
+                .then()
+                .log().everything()
+                .statusCode(BAD_REQUEST.value());
+
+        verify(service, never()).findById(anyLong());
+        verifyNoMoreInteractions(service);
+    }
 
     @Test
     void whenCreateThenReturnSuccess() throws Exception {
