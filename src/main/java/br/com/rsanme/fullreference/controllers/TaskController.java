@@ -79,7 +79,7 @@ public class TaskController {
 
     @Operation(summary = "Exclui uma tarefa pelo Id.", method = "DELETE")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Entidade excluída com sucesso."),
+            @ApiResponse(responseCode = "200", description = "Entidade excluída com sucesso."),
             @ApiResponse(responseCode = "404", description = "Entidade não encontrada com id informado."),
             @ApiResponse(responseCode = "500", description = "Erro ao excluir a entidade na base de dados.")
     })
