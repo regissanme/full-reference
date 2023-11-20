@@ -1,6 +1,7 @@
 package br.com.rsanme.fullreference.controllers;
 
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
+import br.com.rsanme.fullreference.dtos.TaskUpdateDto;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler;
@@ -23,6 +24,7 @@ import java.util.List;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 /**
  * Projeto: full-reference
@@ -187,23 +189,82 @@ class ProjectControllerTest {
     @Test
     void whenUpdateThenReturnSuccess() throws Exception {
 
+        when(service.update(any(Project.class))).thenReturn(project);
 
+        given()
+                .body(project)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .put("project")
+                .then()
+                .log().everything()
+                .statusCode(OK.value());
+
+        verify(service).update(any(Project.class));
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void whenUpdateThenReturnBadRequest() {
+
+        given()
+                .body(new Project())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .put("project")
+                .then()
+                .log().everything()
+                .statusCode(BAD_REQUEST.value());
+
+        verify(service, never()).update(any(Project.class));
+        verifyNoMoreInteractions(service);
     }
 
     @Test
     void whenUpdateThenReturnNotFound() {
+
+        when(service.update(any(Project.class)))
+                .thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+
+        given()
+                .body(project)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .put("project")
+                .then()
+                .log().everything()
+                .statusCode(NOT_FOUND.value());
+
+        verify(service).update(any(Project.class));
+        verifyNoMoreInteractions(service);
+
     }
 
     @Test
     void whenUpdateThenReturnAlreadyExist() {
+        when(service.update(any(Project.class)))
+                .thenThrow(new CustomEntityAlreadyExists(ERROR_MESSAGE_ALREADY_EXISTS));
+
+        given()
+                .body(project)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .when()
+                .put("project")
+                .then()
+                .log().everything()
+                .statusCode(CONFLICT.value());
+
+        verify(service).update(any(Project.class));
+        verifyNoMoreInteractions(service);
     }
 
     @Test
     void whenDeleteThenReturnSuccess() {
-    }
 
-    @Test
-    void whenDeleteThenReturnNotFound() {
     }
 
     private void createInstances() {
