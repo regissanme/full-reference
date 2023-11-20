@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,19 +55,19 @@ public class ProjectController {
 
     @Operation(summary = "Salva um novo projeto.", method = "POST")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Entidade salva com sucesso."),
+            @ApiResponse(responseCode = "201", description = "Entidade salva com sucesso."),
             @ApiResponse(responseCode = "400", description = "Entidade já cadastrada."),
             @ApiResponse(responseCode = "500", description = "Erro ao salvar a entidade na base de dados.")
     })
     @PostMapping
     public ResponseEntity<Project> create(@RequestBody @Valid ProjectCreateDto inputDto) {
-        return ResponseEntity.ok(service.create(inputDto.toModel()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(inputDto.toModel()));
     }
 
     @Operation(summary = "Atualiza um projeto pelo Id.", method = "PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Entidade atualizada com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos."),
+            @ApiResponse(responseCode = "409", description = "Parâmetros inválidos."),
             @ApiResponse(responseCode = "404", description = "Entidade não encontrada com id informado."),
             @ApiResponse(responseCode = "500", description = "Erro ao salvar a entidade na base de dados.")
     })
