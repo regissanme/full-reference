@@ -86,11 +86,11 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CustomEntityAlreadyExists.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleCustomAlreadyExistsException(
             CustomEntityAlreadyExists ex, WebRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.CONFLICT;
 
         CustomError error = new CustomError();
         error.setStatus(status.value());
