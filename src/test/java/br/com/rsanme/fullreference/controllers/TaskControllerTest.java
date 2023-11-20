@@ -334,12 +334,9 @@ class TaskControllerTest {
 
         project.setTasks(List.of(task));
 
-        toSave = new TaskCreateDto();
-        toSave.setName(TASK_NAME);
+        toSave = new TaskCreateDto(TASK_NAME, DESCRIPTION, TASK_NOTES);
 
-        toUpdate = new TaskUpdateDto();
-        toUpdate.setId(ID);
-        toUpdate.setName(TASK_NAME);
+        toUpdate = new TaskUpdateDto(ID, TASK_NAME, DESCRIPTION, TASK_NOTES);
 
     }
 

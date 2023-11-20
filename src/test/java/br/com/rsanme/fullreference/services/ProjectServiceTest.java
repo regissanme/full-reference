@@ -124,6 +124,11 @@ class ProjectServiceTest {
         assertEquals(CREATED_AT, response.getCreatedAt());
         assertEquals(UPDATED_AT, response.getUpdatedAt());
         assertEquals(1, response.getTasks().size());
+        assertEquals(project.hashCode(), response.hashCode());
+        assertTrue(response.equals(project));
+        assertFalse(response.equals(null));
+        assertFalse(response.equals(toSave));
+        assertTrue(response.toString().contains("Project"));
 
         verify(repository, times(1))
                 .findByName(anyString());

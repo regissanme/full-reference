@@ -131,6 +131,12 @@ class TaskServiceTest {
         assertEquals(CREATED_AT, response.getCreatedAt());
         assertEquals(UPDATED_AT, response.getUpdatedAt());
         assertEquals(DEADLINE, response.getDeadline());
+        assertEquals(response.hashCode(), task.hashCode());
+        assertTrue(response.equals(task));
+        assertFalse(response.equals(toSave));
+        assertFalse(response.equals(null));
+        assertTrue(response.toString().contains("Task"));
+
 
         verify(repository, times(1))
                 .findByName(anyString());

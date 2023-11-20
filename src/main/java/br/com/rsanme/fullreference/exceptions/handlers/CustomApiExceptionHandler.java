@@ -56,19 +56,6 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, error, headers, status, request);
     }
 
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        CustomError error = new CustomError();
-        error.setStatus(status.value());
-        error.setTimestamp(OffsetDateTime.now());
-        error.setTitle(ex.getMessage());
-
-        return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
-    }
 
     @ExceptionHandler(CustomEntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
