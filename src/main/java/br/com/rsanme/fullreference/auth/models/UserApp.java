@@ -56,9 +56,14 @@ public class UserApp implements UserDetails {
     @Column(columnDefinition = "boolean default true")
     private Boolean active;
 
+    @NotBlank(message = "A senha é obrigatória!")
+    @Column(nullable = false)
+    private String role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+//        "ROLE_USER"
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override
