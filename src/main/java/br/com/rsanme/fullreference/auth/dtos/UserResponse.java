@@ -3,6 +3,7 @@ package br.com.rsanme.fullreference.auth.dtos;
 import br.com.rsanme.fullreference.auth.models.UserApp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Projeto: full-reference
@@ -31,5 +32,10 @@ public record UserResponse(
                 app.getRole(),
                 token
         );
+    }
+
+    public static List<UserResponse> toListResponse(List<UserApp> all) {
+        return all.stream().map(user -> UserResponse.toResponse(user, null))
+                .toList();
     }
 }
