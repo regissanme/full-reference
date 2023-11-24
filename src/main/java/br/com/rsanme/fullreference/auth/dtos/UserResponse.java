@@ -17,9 +17,10 @@ public record UserResponse(
         LocalDateTime createdAt,
         LocalDateTime lastAccessAt,
         Boolean active,
-        String role
+        String role,
+        String token
 ) {
-    public static UserResponse toResponse(UserApp app) {
+    public static UserResponse toResponse(UserApp app, String token) {
         return new UserResponse(
                 app.getId(),
                 app.getName(),
@@ -27,7 +28,8 @@ public record UserResponse(
                 app.getCreatedAt(),
                 app.getLastAccessAt(),
                 app.getActive(),
-                app.getRole()
+                app.getRole(),
+                token
         );
     }
 }

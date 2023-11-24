@@ -1,6 +1,7 @@
 package br.com.rsanme.fullreference.auth.config;
 
 import br.com.rsanme.fullreference.auth.jwt.TokenFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,7 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final TokenFilter tokenFilter;
+    @Autowired
+    private TokenFilter tokenFilter;
 
     public WebSecurityConfig(TokenFilter tokenFilter) {
         this.tokenFilter = tokenFilter;
@@ -39,6 +41,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers("/project/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/task/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

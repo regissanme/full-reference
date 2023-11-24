@@ -1,6 +1,9 @@
 package br.com.rsanme.fullreference.auth.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,8 +13,13 @@ import org.springframework.stereotype.Component;
  * Hora: 14:50
  */
 @Component
-public record Login(
-        @NotBlank(message = "O usuário é obrigatório!") String username,
-        @NotBlank(message = "A senha é obrigatória!") String password
-) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Login {
+    @NotBlank(message = "O usuário é obrigatório!")
+    String username;
+
+    @NotBlank(message = "A senha é obrigatória!")
+    String password;
 }

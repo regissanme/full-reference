@@ -20,10 +20,10 @@ import java.time.ZoneOffset;
 public class TokenService {
 
 
-    @Value("#{auth.secret}")
+    @Value("auth.secret")
     private String secret;
 
-    @Value("#{auth.issuer}")
+    @Value("auth.issuer")
     private String issuer;
 
     public String generateToken(UserApp userApp) {
