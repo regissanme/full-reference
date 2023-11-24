@@ -51,7 +51,7 @@ public class UserAppService {
         userApp.setUpdatedAt(LocalDateTime.now());
         userApp.setActive(true);
         if (userApp.getRole() == null) {
-            userApp.setRole("ADMIN");
+            userApp.setRole("USER");
         }
         userApp.setPassword(passwordEncoder.encode(userApp.getPassword()));
 
