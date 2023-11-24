@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.dtos;
 
+import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,18 @@ public class TaskCreateDto {
 
     private String notes;
 
+    private Long projectId;
+
     public Task toModel() {
         Task task = new Task();
         task.setName(this.name);
         task.setDescription(this.description);
         task.setNotes(this.notes);
+
+        Project project = new Project();
+        project.setId(this.projectId);
+
+        task.setProject(project);
 
         return task;
     }
