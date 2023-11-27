@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Projeto: full-reference
@@ -35,10 +34,9 @@ public class UserAppService {
 
     public UserApp findById(Long id) {
 
-        Optional<UserApp> optional = userRepository.findById(id);
-
-        return optional.orElseThrow(() -> new UsernameNotFoundException(
-                String.format("Usuário com id %s não encontrado!", id)));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("Usuário com id %s não encontrado!", id)));
     }
 
     public UserApp findByUsername(UserApp userApp) {
@@ -51,7 +49,7 @@ public class UserAppService {
         userApp.setUpdatedAt(LocalDateTime.now());
         userApp.setActive(true);
         if (userApp.getRole() == null) {
-            userApp.setRole("USER");
+            userApp.setRole("ROLE_USER");
         }
         userApp.setPassword(passwordEncoder.encode(userApp.getPassword()));
 
