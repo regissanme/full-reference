@@ -25,8 +25,12 @@ public class ProjectService {
         this.repository = repository;
     }
 
-    public List<Project> findAll() {
-        return repository.findAll();
+    public List<Project> findAll(Long userId) {
+        if (userId == null) {
+            return repository.findAll();
+        }
+        return repository.findAllByUserId(userId);
+
     }
 
     public Project findById(Long id) {

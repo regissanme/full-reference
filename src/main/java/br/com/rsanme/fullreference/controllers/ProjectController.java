@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.controllers;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.services.ProjectService;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +40,8 @@ public class ProjectController {
     })
     @GetMapping
     public ResponseEntity<List<Project>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        return ResponseEntity.ok(
+                service.findAll(getUserApp().getId()));
     }
 
     @Operation(summary = "Busca um projeto pelo Id.", method = "GET")
@@ -61,7 +64,10 @@ public class ProjectController {
     })
     @PostMapping
     public ResponseEntity<Project> create(@RequestBody @Valid ProjectCreateDto inputDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(inputDto.toModel()));
+        var principal = getUserApp();
+        Project project = inputDto.toModel();
+        project.setUser(principal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(project));
     }
 
     @Operation(summary = "Atualiza um projeto pelo Id.", method = "PUT")
@@ -86,5 +92,9 @@ public class ProjectController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.ok(String.format("Projeto com id: %s excluído com sucesso!", id));
+    }
+
+    private static UserApp getUserApp() {
+        return  (UserApp) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
