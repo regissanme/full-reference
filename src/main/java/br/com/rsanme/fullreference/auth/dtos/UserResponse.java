@@ -21,15 +21,15 @@ public record UserResponse(
         String role,
         String token
 ) {
-    public static UserResponse toResponse(UserApp app, String token) {
+    public static UserResponse toResponse(UserApp user, String token) {
         return new UserResponse(
-                app.getId(),
-                app.getName(),
-                app.getUsername(),
-                app.getCreatedAt(),
-                app.getLastAccessAt(),
-                app.getActive(),
-                app.getRole(),
+                user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getCreatedAt(),
+                user.getLastAccessAt(),
+                user.getActive(),
+                user.getRole().replace("ROLE_", ""),
                 token
         );
     }
