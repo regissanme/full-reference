@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.dtos;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.models.Project;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,10 +24,16 @@ public class ProjectCreateDto {
 
     private String description;
 
+    private Long userId;
+
     public Project toModel() {
+        UserApp user = new UserApp();
+        user.setId(userId);
+
         Project project = new Project();
         project.setName(this.name);
         project.setDescription(this.description);
+        project.setUser(user);
 
         return project;
     }
