@@ -3,6 +3,7 @@ package br.com.rsanme.fullreference.auth.services;
 import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.auth.repository.UserAppRepository;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
+import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,8 +36,8 @@ public class UserAppService {
     public UserApp findById(Long id) {
 
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        String.format("Usuário com id %s não encontrado!", id)));
+                .orElseThrow(() -> new CustomEntityNotFoundException(
+                        "Não foi encontrado nenhum usuário com o id: " + id));
     }
 
     public UserApp findByUsername(UserApp userApp) {
