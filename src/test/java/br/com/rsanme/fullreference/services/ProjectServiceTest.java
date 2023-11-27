@@ -1,10 +1,12 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.repositories.ProjectRepository;
+import br.com.rsanme.fullreference.utils.MockUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +49,8 @@ class ProjectServiceTest {
 
     private Project project;
 
+    private UserApp user;
+
     @BeforeEach
     void setUp() {
         createInstances();
@@ -55,9 +59,9 @@ class ProjectServiceTest {
     @Test
     void whenFindAllThenReturnList() {
 
-        when(repository.findAll()).thenReturn(List.of(project));
+        when(repository.findAllByUserId(anyLong())).thenReturn(List.of(project));
 
-        List<Project> responseList = service.findAll();
+        List<Project> responseList = service.findAll(user.getId());
 
         assertNotNull(responseList);
         assertEquals(1, responseList.size());
@@ -70,7 +74,7 @@ class ProjectServiceTest {
         assertEquals(1, responseList.get(0).getTasks().size());
 
         verify(repository, times(1))
-                .findAll();
+                .findAllByUserId(anyLong());
 
     }
 
@@ -109,7 +113,7 @@ class ProjectServiceTest {
 
     @Test
     void whenCreateThenSuccess() {
-        Project toSave = new Project(null, PROJECT_NAME, DESCRIPTION, null, null, null);
+        Project toSave = new Project(null, PROJECT_NAME, DESCRIPTION, null, null, null, user);
 
         when(repository.save(any())).thenReturn(project);
 
@@ -137,7 +141,7 @@ class ProjectServiceTest {
     @Test
     void whenCreateThenThrowAlreadyExistsForProject() {
 
-        Project toSave = new Project(null, PROJECT_NAME, DESCRIPTION, null, null, null);
+        Project toSave = new Project(null, PROJECT_NAME, DESCRIPTION, null, null, null, user);
 
         when(repository.findByName(anyString())).thenReturn(Optional.of(project));
 
@@ -198,7 +202,7 @@ class ProjectServiceTest {
     @Test
     void whenUpdateThenThrowAlreadyExistsForProject() {
 
-        Project toUpdate = new Project(2L, PROJECT_NAME, null, null, null, null);
+        Project toUpdate = new Project(2L, PROJECT_NAME, null, null, null, null, user);
 
         when(repository.findById(anyLong())).thenReturn(Optional.of(project));
         when(repository.findByName(anyString())).thenReturn(Optional.of(project));
@@ -245,12 +249,16 @@ class ProjectServiceTest {
     }
 
     private void createInstances() {
+
+        user = MockUser.getUser();
+
         project = new Project();
         project.setId(ID);
         project.setName(PROJECT_NAME);
         project.setDescription(DESCRIPTION);
         project.setCreatedAt(CREATED_AT);
         project.setUpdatedAt(UPDATED_AT);
+        project.setUser(user);
 
         Task task = new Task();
         task.setId(ID);
@@ -264,5 +272,7 @@ class ProjectServiceTest {
         task.setProject(project);
 
         project.setTasks(List.of(task));
+
+
     }
 }

@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.controllers;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
@@ -7,6 +8,7 @@ import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler
 import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.services.ProjectService;
+import br.com.rsanme.fullreference.utils.MockUser;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +70,7 @@ class ProjectControllerTest {
     @Test
     void whenFindAllProjectsThenReturnList() throws Exception {
 
-        when(service.findAll()).thenReturn(List.of(project));
+        when(service.findAll(anyLong())).thenReturn(List.of(project));
 
         given()
                 .when()
@@ -77,7 +79,7 @@ class ProjectControllerTest {
                 .log().everything()
                 .statusCode(OK.value());
 
-        verify(service).findAll();
+        verify(service).findAll(anyLong());
         verifyNoMoreInteractions(service);
     }
 
@@ -279,12 +281,15 @@ class ProjectControllerTest {
     }
 
     private void createInstances() {
+        UserApp user = MockUser.getUser();
+
         project = new Project();
         project.setId(ID);
         project.setName(PROJECT_NAME);
         project.setDescription(DESCRIPTION);
         project.setCreatedAt(CREATED_AT);
         project.setUpdatedAt(UPDATED_AT);
+        project.setUser(user);
 
         Task task = new Task();
         task.setId(ID);
@@ -299,7 +304,7 @@ class ProjectControllerTest {
 
         project.setTasks(List.of(task));
 
-        projectCreateDto = new ProjectCreateDto(PROJECT_NAME, DESCRIPTION);
+        projectCreateDto = new ProjectCreateDto(PROJECT_NAME, DESCRIPTION, user.getId());
 
     }
 
