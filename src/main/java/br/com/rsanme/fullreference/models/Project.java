@@ -1,5 +1,7 @@
 package br.com.rsanme.fullreference.models;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -43,6 +45,11 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserApp user;
 
     @Override
     public boolean equals(Object o) {
