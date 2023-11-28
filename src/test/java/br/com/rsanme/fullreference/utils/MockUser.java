@@ -15,6 +15,7 @@ public class MockUser {
     public static final LocalDateTime CREATED_AT = LocalDateTime.parse("2023-11-27T15:59:31.170982300");
     public static final LocalDateTime UPDATED_AT = LocalDateTime.parse("2023-11-27T17:59:31.170982300");
     public static final LocalDateTime LAST_ACCESS_AT = LocalDateTime.parse("2023-11-27T18:59:31.170982300");
+    public static final LocalDateTime CURRENT_ACCESS_AT = LocalDateTime.parse("2023-11-27T19:59:31.170982300");
     public static final long ID = 1L;
     public static final String NAME = "Teste User";
     public static final String USERNAME = "teste";
@@ -34,6 +35,7 @@ public class MockUser {
         user.setCreatedAt(CREATED_AT);
         user.setUpdatedAt(UPDATED_AT);
         user.setLastAccessAt(LAST_ACCESS_AT);
+        user.setCurrentAccessAt(CURRENT_ACCESS_AT);
         user.setActive(true);
         user.setRole(ROLE_ADMIN);
 
@@ -48,6 +50,6 @@ public class MockUser {
     }
 
     public static UserApp getUserToSave(){
-        return new UserApp(null, NAME, USERNAME, PASSWORD, null, null, null, null, null);
+        return new UserApp(null, NAME, USERNAME, PASSWORD, null, null, null, null, null, null);
     }
 }

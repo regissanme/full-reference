@@ -53,6 +53,8 @@ public class UserApp implements UserDetails {
 
     private LocalDateTime lastAccessAt;
 
+    private LocalDateTime currentAccessAt;
+
     @Column(columnDefinition = "boolean default true")
     private Boolean active;
 

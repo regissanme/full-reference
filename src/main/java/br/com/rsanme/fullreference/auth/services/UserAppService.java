@@ -4,8 +4,6 @@ import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.auth.repository.UserAppRepository;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,18 +82,16 @@ public class UserAppService {
     }
 
     public void setLastAccessAt(UserApp userApp) {
-        UserApp currentUser = findByUsername(userApp);
-        currentUser.setLastAccessAt(LocalDateTime.now());
+        UserApp currentUser = findById(userApp.getId());
+        currentUser.setLastAccessAt(currentUser.getCurrentAccessAt());
+        currentUser.setCurrentAccessAt(LocalDateTime.now());
         userRepository.save(currentUser);
     }
 
-    private boolean entityExists(UserApp userApp) {
-        UserDetails byUsername = userRepository.findByUsername(userApp.getUsername());
-        return byUsername != null;
-    }
-
     private void entityExistsThenThrows(UserApp userApp) {
-        if (entityExists(userApp)) {
+        UserApp byUsername = findByUsername(userApp);
+
+        if (byUsername != null && !byUsername.getId().equals(userApp.getId())) {
             throw new CustomEntityAlreadyExists(String.format(
                     "Já existe um usuário com o username %s!", userApp.getUsername()
             ));
