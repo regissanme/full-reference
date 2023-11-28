@@ -25,6 +25,7 @@ public class MockUser {
 
     public static final String ERROR_MESSAGE_ALREADY_EXISTS = "Já existe um usuário com o username " + USERNAME + "!";
     public static final String ERROR_MESSAGE_NOT_FOUND = "Não foi encontrado nenhum usuário com o id: 1";
+    public static final String ERROR_MESSAGE_USER_NOT_FOUND = "Usuário " + USERNAME + " não encontrado!";
 
     public static UserApp getAdminUser() {
         UserApp user = new UserApp();
@@ -49,7 +50,7 @@ public class MockUser {
         return user;
     }
 
-    public static UserApp getUserToSave(){
+    public static UserApp getUserToSave() {
         return new UserApp(null, NAME, USERNAME, PASSWORD, null, null, null, null, null, null);
     }
 }

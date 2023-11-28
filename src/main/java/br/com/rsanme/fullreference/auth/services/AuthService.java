@@ -22,7 +22,7 @@ public class AuthService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         UserDetails user = userAppRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(
