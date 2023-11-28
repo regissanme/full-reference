@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,9 @@ class UserAppServiceTest {
 
     @Mock
     private UserAppRepository repository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private UserApp user;
 
@@ -150,7 +154,6 @@ class UserAppServiceTest {
     void whenUpdateThenSuccess() {
 
         when(repository.findById(MockUser.ID)).thenReturn(Optional.of(user));
-        when(repository.findByUsername(anyString())).thenReturn(user);
         when(repository.save(any())).thenReturn(user);
 
         UserApp response = service.update(user);
@@ -161,14 +164,37 @@ class UserAppServiceTest {
         assertEquals(MockUser.USERNAME, response.getUsername());
         assertEquals(MockUser.PASSWORD, response.getPassword());
         assertEquals(MockUser.CREATED_AT, response.getCreatedAt());
-        assertEquals(MockUser.UPDATED_AT, response.getUpdatedAt());
         assertEquals(MockUser.LAST_ACCESS_AT, response.getLastAccessAt());
 
         verify(repository, times(1))
-                .findByUsername(anyString());
+                .findById(anyLong());
+
+        verify(repository).save(any(UserApp.class));
+    }
+
+    @Test
+    void whenUpdateChangingPasswordThenSuccess() {
+
+        UserApp toUpdate = MockUser.getUser();
+        toUpdate.setPassword("new password");
+
+        when(repository.findById(MockUser.ID)).thenReturn(Optional.of(user));
+        when(repository.save(any())).thenReturn(user);
+
+        UserApp response = service.update(toUpdate);
+
+        assertEquals(UserApp.class, response.getClass());
+        assertEquals(MockUser.ID, response.getId());
+        assertEquals(MockUser.NAME, response.getName());
+        assertEquals(MockUser.USERNAME, response.getUsername());
+        assertEquals(MockUser.PASSWORD, response.getPassword());
+        assertEquals(MockUser.CREATED_AT, response.getCreatedAt());
+        assertEquals(MockUser.LAST_ACCESS_AT, response.getLastAccessAt());
 
         verify(repository, times(1))
                 .findById(anyLong());
+
+        verify(repository).save(any(UserApp.class));
     }
 
     @Test
@@ -194,7 +220,8 @@ class UserAppServiceTest {
     void whenUpdateThenThrowAlreadyExistsForUserApp() {
 
         UserApp toUpdate = MockUser.getUser();
-        toUpdate.setId(2L);
+        user.setId(2L);
+        user.setUsername("teste2");
 
         when(repository.findById(anyLong())).thenReturn(Optional.of(user));
         when(repository.findByUsername(anyString())).thenReturn(user);
@@ -241,7 +268,31 @@ class UserAppServiceTest {
     }
 
     @Test
-    void setLastAccessAt() {
+    void whenSetLastAccessAtThanSuccess() {
+
+        when(repository.findById(MockUser.ID)).thenReturn(Optional.of(user));
+
+        service.setLastAccessAt(user);
+
+        verify(repository, times(1))
+                .findById(anyLong());
+
+        verify(repository).save(any(UserApp.class));
+    }
+
+    @Test
+    void whenSetLastAccessAtThrowNotFoundException(){
+        when(repository.findById(MockUser.ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.setLastAccessAt(user))
+                .hasMessage(MockUser.ERROR_MESSAGE_NOT_FOUND)
+                .isInstanceOf(CustomEntityNotFoundException.class);
+
+        verify(repository)
+                .findById(anyLong());
+
+        verify(repository, never())
+                .save(any(UserApp.class));
     }
 
     private void createIntances() {
