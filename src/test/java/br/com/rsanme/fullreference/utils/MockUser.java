@@ -1,5 +1,7 @@
 package br.com.rsanme.fullreference.utils;
 
+import br.com.rsanme.fullreference.auth.dtos.UserRequest;
+import br.com.rsanme.fullreference.auth.dtos.UserResponse;
 import br.com.rsanme.fullreference.auth.models.UserApp;
 
 import java.time.LocalDateTime;
@@ -52,5 +54,13 @@ public class MockUser {
 
     public static UserApp getUserToSave() {
         return new UserApp(null, NAME, USERNAME, PASSWORD, null, null, null, null, null, null);
+    }
+
+    public static UserRequest getUserRequest() {
+        return new UserRequest(null, NAME, USERNAME, PASSWORD);
+    }
+
+    public static UserResponse getUserResponse() {
+        return new UserResponse(ID, NAME, USERNAME, CREATED_AT, LAST_ACCESS_AT, true, ROLE_USER, null);
     }
 }
