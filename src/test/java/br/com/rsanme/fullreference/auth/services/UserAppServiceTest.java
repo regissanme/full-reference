@@ -122,6 +122,12 @@ class UserAppServiceTest {
         assertEquals(MockUser.CREATED_AT, response.getCreatedAt());
         assertEquals(MockUser.UPDATED_AT, response.getUpdatedAt());
         assertEquals(MockUser.LAST_ACCESS_AT, response.getLastAccessAt());
+        assertEquals(1, response.getAuthorities().size());
+        assertEquals(MockUser.ROLE_USER ,response.getRole());
+        assertTrue(response.isAccountNonExpired());
+        assertTrue(response.isAccountNonLocked());
+        assertTrue(response.isCredentialsNonExpired());
+        assertTrue(response.isEnabled());
         assertEquals(user.hashCode(), response.hashCode());
         assertTrue(response.equals(user));
         assertFalse(response.equals(null));

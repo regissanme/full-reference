@@ -57,7 +57,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void whenFindAllThenReturnList() {
+    void whenFindAllWithUserThenReturnListProjectsByUser() {
 
         when(repository.findAllByUserId(anyLong())).thenReturn(List.of(project));
 
@@ -76,6 +76,26 @@ class ProjectServiceTest {
         verify(repository, times(1))
                 .findAllByUserId(anyLong());
 
+    }
+
+    @Test
+    void whenFindAllWithoutUserThenReturnFullList() {
+
+        when(repository.findAll()).thenReturn(List.of(project));
+
+        List<Project> responseList = service.findAll(null);
+
+        assertNotNull(responseList);
+        assertEquals(1, responseList.size());
+        assertEquals(Project.class, responseList.get(0).getClass());
+        assertEquals(ID, responseList.get(0).getId());
+        assertEquals(PROJECT_NAME, responseList.get(0).getName());
+        assertEquals(DESCRIPTION, responseList.get(0).getDescription());
+        assertEquals(CREATED_AT, responseList.get(0).getCreatedAt());
+        assertEquals(UPDATED_AT, responseList.get(0).getUpdatedAt());
+        assertEquals(1, responseList.get(0).getTasks().size());
+
+        verify(repository).findAll();
     }
 
     @Test
