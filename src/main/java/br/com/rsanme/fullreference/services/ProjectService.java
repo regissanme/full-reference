@@ -1,5 +1,6 @@
 package br.com.rsanme.fullreference.services;
 
+import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Project;
@@ -25,11 +26,11 @@ public class ProjectService {
         this.repository = repository;
     }
 
-    public List<Project> findAll(Long userId) {
-        if (userId == null) {
+    public List<Project> findAll(UserApp userApp) {
+        if (userApp == null) {
             return repository.findAll();
         }
-        return repository.findAllByUserId(userId);
+        return repository.findAllByUserId(userApp.getId());
 
     }
 

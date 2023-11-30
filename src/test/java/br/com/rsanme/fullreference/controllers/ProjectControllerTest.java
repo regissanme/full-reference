@@ -70,16 +70,17 @@ class ProjectControllerTest {
     @Test
     void whenFindAllProjectsThenReturnList() throws Exception {
 
-        when(service.findAll(anyLong())).thenReturn(List.of(project));
+        when(service.findAll(null)).thenReturn(List.of(project));
 
         given()
                 .when()
                 .get("project/")
                 .then()
+                .apply(print())
                 .log().everything()
                 .statusCode(OK.value());
 
-        verify(service).findAll(anyLong());
+        verify(service).findAll(any());
         verifyNoMoreInteractions(service);
     }
 

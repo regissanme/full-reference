@@ -61,7 +61,7 @@ class ProjectServiceTest {
 
         when(repository.findAllByUserId(anyLong())).thenReturn(List.of(project));
 
-        List<Project> responseList = service.findAll(user.getId());
+        List<Project> responseList = service.findAll(MockUser.getUser());
 
         assertNotNull(responseList);
         assertEquals(1, responseList.size());

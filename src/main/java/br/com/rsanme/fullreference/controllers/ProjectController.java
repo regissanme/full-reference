@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<Project>> findAll() {
         return ResponseEntity.ok(
-                service.findAll(getUserApp().getId()));
+                service.findAll(getUserApp()));
     }
 
     @Operation(summary = "Busca um projeto pelo Id.", method = "GET")
@@ -94,7 +95,11 @@ public class ProjectController {
         return ResponseEntity.ok(String.format("Projeto com id: %s excluído com sucesso!", id));
     }
 
-    private static UserApp getUserApp() {
-        return  (UserApp) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private UserApp getUserApp() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        return (UserApp) authentication.getPrincipal();
     }
 }
