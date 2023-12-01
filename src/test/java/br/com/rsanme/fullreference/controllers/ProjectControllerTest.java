@@ -1,14 +1,12 @@
 package br.com.rsanme.fullreference.controllers;
 
-import br.com.rsanme.fullreference.auth.models.UserApp;
 import br.com.rsanme.fullreference.dtos.ProjectCreateDto;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler;
 import br.com.rsanme.fullreference.models.Project;
-import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.services.ProjectService;
-import br.com.rsanme.fullreference.utils.MockUser;
+import br.com.rsanme.fullreference.utils.MockProject;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -38,15 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith(MockitoExtension.class)
 class ProjectControllerTest {
 
-    public static final Long ID = 1L;
-    public static final String DESCRIPTION = "Implements full reference to Spring Boot ecosystem";
-    public static final String PROJECT_NAME = "Full Reference";
-    private static final OffsetDateTime CREATED_AT = OffsetDateTime.parse("2023-11-13T19:50:41.685439800-03:00");
-    private static final OffsetDateTime UPDATED_AT = OffsetDateTime.parse("2023-11-13T19:52:39.241536-03:00");
-    private static final String TASK_NAME = "Feature Spring Security with JWT";
-    public static final String TASK_NOTES = "Note 01";
-    public static final String ERROR_MESSAGE_ALREADY_EXISTS = "Já existe um projeto cadastrado com o nome: Full Reference";
-    private static final String ERROR_MESSAGE_NOT_FOUND = "Não foi encontrado nenhum projeto com o id: 1";
+    public static final String PROJECT_API_URL = "project/";
 
     @Mock
     private ProjectService service;
@@ -76,7 +63,7 @@ class ProjectControllerTest {
 
         given()
                 .when()
-                .get("project/")
+                .get(PROJECT_API_URL)
                 .then()
                 .apply(print())
                 .log().everything()
@@ -93,7 +80,7 @@ class ProjectControllerTest {
 
         given()
                 .when()
-                .get("project/" + ID)
+                .get(PROJECT_API_URL + MockProject.ID)
                 .then()
                 .log().everything()
                 .statusCode(OK.value());
@@ -106,11 +93,11 @@ class ProjectControllerTest {
     @Test
     void whenFindByIdThenReturnNotFound() throws Exception {
 
-        when(service.findById(1L)).thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+        when(service.findById(1L)).thenThrow(new CustomEntityNotFoundException(MockProject.ERROR_MESSAGE_NOT_FOUND));
 
         given()
                 .when()
-                .get("project/" + 1L)
+                .get(PROJECT_API_URL + 1L)
                 .then()
                 .log().everything()
                 .statusCode(NOT_FOUND.value());
@@ -124,7 +111,7 @@ class ProjectControllerTest {
 
         given()
                 .when()
-                .get("project/null")
+                .get(PROJECT_API_URL + "null")
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -143,7 +130,7 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("project")
+                .post(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(CREATED.value());
@@ -161,7 +148,7 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("project")
+                .post(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -174,14 +161,14 @@ class ProjectControllerTest {
     void whenCreateThenReturnAlreadyExists() {
 
         when(service.create(any(Project.class)))
-                .thenThrow(new CustomEntityAlreadyExists(ERROR_MESSAGE_ALREADY_EXISTS));
+                .thenThrow(new CustomEntityAlreadyExists(MockProject.ERROR_MESSAGE_ALREADY_EXISTS));
 
         given()
                 .body(projectCreateDto)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("project")
+                .post(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(CONFLICT.value());
@@ -200,7 +187,7 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("project")
+                .put(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(OK.value());
@@ -217,7 +204,7 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("project")
+                .put(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -230,14 +217,14 @@ class ProjectControllerTest {
     void whenUpdateThenReturnNotFound() {
 
         when(service.update(any(Project.class)))
-                .thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+                .thenThrow(new CustomEntityNotFoundException(MockProject.ERROR_MESSAGE_NOT_FOUND));
 
         given()
                 .body(project)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("project")
+                .put(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(NOT_FOUND.value());
@@ -250,14 +237,14 @@ class ProjectControllerTest {
     @Test
     void whenUpdateThenReturnAlreadyExist() {
         when(service.update(any(Project.class)))
-                .thenThrow(new CustomEntityAlreadyExists(ERROR_MESSAGE_ALREADY_EXISTS));
+                .thenThrow(new CustomEntityAlreadyExists(MockProject.ERROR_MESSAGE_ALREADY_EXISTS));
 
         given()
                 .body(project)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("project")
+                .put(PROJECT_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(CONFLICT.value());
@@ -273,7 +260,7 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .delete("project/" + ID)
+                .delete(PROJECT_API_URL + MockProject.ID)
                 .then()
                 .apply(print())
                 .log().everything()
@@ -284,32 +271,8 @@ class ProjectControllerTest {
     }
 
     private void createInstances() {
-        UserApp user = MockUser.getUser();
-
-        project = new Project();
-        project.setId(ID);
-        project.setName(PROJECT_NAME);
-        project.setDescription(DESCRIPTION);
-        project.setCreatedAt(CREATED_AT);
-        project.setUpdatedAt(UPDATED_AT);
-        project.setUser(user);
-
-        Task task = new Task();
-        task.setId(ID);
-        task.setName(TASK_NAME);
-        task.setDescription(DESCRIPTION);
-        task.setNotes(TASK_NOTES);
-        task.setCompleted(true);
-        task.setCreatedAt(CREATED_AT.plusMinutes(2));
-        task.setUpdatedAt(UPDATED_AT.plusMinutes(4));
-        task.setDeadline(UPDATED_AT.plusHours(8));
-        task.setProject(project);
-
-        project.setTasks(List.of(task));
-
-        projectCreateDto = new ProjectCreateDto(PROJECT_NAME, DESCRIPTION, user.getId());
-
+        project = MockProject.getProject();
+        projectCreateDto = MockProject.getProjectCreateDto();
     }
-
 
 }

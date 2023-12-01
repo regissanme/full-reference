@@ -5,9 +5,9 @@ import br.com.rsanme.fullreference.dtos.TaskUpdateDto;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.exceptions.handlers.CustomApiExceptionHandler;
-import br.com.rsanme.fullreference.models.Project;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.services.TaskService;
+import br.com.rsanme.fullreference.utils.MockTask;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -36,15 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith(MockitoExtension.class)
 class TaskControllerTest {
 
-    public static final Long ID = 1L;
-    public static final String DESCRIPTION = "Implements full reference to Spring Boot ecosystem";
-    public static final String PROJECT_NAME = "Full Reference";
-    private static final OffsetDateTime CREATED_AT = OffsetDateTime.parse("2023-11-13T19:50:41.685439800-03:00");
-    private static final OffsetDateTime UPDATED_AT = OffsetDateTime.parse("2023-11-13T19:52:39.241536-03:00");
-    private static final String TASK_NAME = "Feature Spring Security with JWT";
-    public static final String TASK_NOTES = "Note 01";
-    public static final String ERROR_MESSAGE_ALREADY_EXISTS = "Já existe uma tarefa cadastrada com o nome: Full Reference";
-    private static final String ERROR_MESSAGE_NOT_FOUND = "Não foi encontrada nenhuma tarefa com o id: 1";
+    public static final String TASK_API_URL = "task/";
 
     @Mock
     private TaskService service;
@@ -75,7 +66,7 @@ class TaskControllerTest {
 
         given()
                 .when()
-                .get("task/")
+                .get(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(OK.value());
@@ -91,7 +82,7 @@ class TaskControllerTest {
 
         given()
                 .when()
-                .get("task/" + ID)
+                .get(TASK_API_URL + MockTask.ID)
                 .then()
                 .log().everything()
                 .statusCode(OK.value());
@@ -103,11 +94,11 @@ class TaskControllerTest {
     @Test
     void whenFindByIdTaskThanReturnNotFound() {
 
-        when(service.findById(1L)).thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+        when(service.findById(1L)).thenThrow(new CustomEntityNotFoundException(MockTask.ERROR_MESSAGE_NOT_FOUND));
 
         given()
                 .when()
-                .get("task/" + 1L)
+                .get(TASK_API_URL + 1L)
                 .then()
                 .log().everything()
                 .statusCode(NOT_FOUND.value());
@@ -121,7 +112,7 @@ class TaskControllerTest {
 
         given()
                 .when()
-                .get("task/null")
+                .get(TASK_API_URL + "null")
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -140,7 +131,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("task")
+                .post(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(CREATED.value());
@@ -157,7 +148,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("task")
+                .post(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -170,14 +161,14 @@ class TaskControllerTest {
     void whenCreateTaskThenReturnAlreadyExists() {
 
         when(service.create(any(Task.class)))
-                .thenThrow(new CustomEntityAlreadyExists(ERROR_MESSAGE_ALREADY_EXISTS));
+                .thenThrow(new CustomEntityAlreadyExists(MockTask.ERROR_MESSAGE_ALREADY_EXISTS));
 
         given()
                 .body(toSave)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .post("task")
+                .post(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(CONFLICT.value());
@@ -196,7 +187,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("task")
+                .put(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(OK.value());
@@ -213,7 +204,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("task")
+                .put(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(BAD_REQUEST.value());
@@ -226,14 +217,14 @@ class TaskControllerTest {
     void whenUpdateTaskThenReturnNotFound() {
 
         when(service.update(any(Task.class)))
-                .thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+                .thenThrow(new CustomEntityNotFoundException(MockTask.ERROR_MESSAGE_NOT_FOUND));
 
         given()
                 .body(toUpdate)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("task")
+                .put(TASK_API_URL)
                 .then()
                 .log().everything()
                 .statusCode(NOT_FOUND.value());
@@ -249,7 +240,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .delete("task/" + ID)
+                .delete(TASK_API_URL + MockTask.ID)
                 .then()
                 .apply(print())
                 .log().everything()
@@ -268,7 +259,7 @@ class TaskControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("task/" + ID)
+                .put(TASK_API_URL + MockTask.ID)
                 .then()
                 .apply(print())
                 .log().everything()
@@ -283,7 +274,7 @@ class TaskControllerTest {
 
         given()
                 .when()
-                .put("task/null")
+                .put(TASK_API_URL + "null")
                 .then()
                 .apply(print())
                 .log().everything()
@@ -297,13 +288,13 @@ class TaskControllerTest {
     void whenCompleteTaskThenReturnNotFound() {
 
         when(service.completeTask(anyLong()))
-                .thenThrow(new CustomEntityNotFoundException(ERROR_MESSAGE_NOT_FOUND));
+                .thenThrow(new CustomEntityNotFoundException(MockTask.ERROR_MESSAGE_NOT_FOUND));
 
         given()
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .when()
-                .put("task/" + ID)
+                .put(TASK_API_URL + MockTask.ID)
                 .then()
                 .apply(print())
                 .log().everything()
@@ -314,30 +305,12 @@ class TaskControllerTest {
     }
 
     private void createInstances() {
-        Project project = new Project();
-        project.setId(ID);
-        project.setName(PROJECT_NAME);
-        project.setDescription(DESCRIPTION);
-        project.setCreatedAt(CREATED_AT);
-        project.setUpdatedAt(UPDATED_AT);
 
-        task = new Task();
-        task.setId(ID);
-        task.setName(TASK_NAME);
-        task.setDescription(DESCRIPTION);
-        task.setNotes(TASK_NOTES);
-        task.setCompleted(true);
-        task.setCreatedAt(CREATED_AT.plusMinutes(2));
-        task.setUpdatedAt(UPDATED_AT.plusMinutes(4));
-        task.setDeadline(UPDATED_AT.plusHours(8));
-        task.setProject(project);
+        task = MockTask.getTask();
 
-        project.setTasks(List.of(task));
+        toSave = MockTask.getTaskCreateDto();
 
-        toSave = new TaskCreateDto(TASK_NAME, DESCRIPTION, TASK_NOTES, ID);
-
-        toUpdate = new TaskUpdateDto(ID, TASK_NAME, DESCRIPTION, TASK_NOTES);
-
+        toUpdate = MockTask.getTaskUpdateDto();
     }
 
 
