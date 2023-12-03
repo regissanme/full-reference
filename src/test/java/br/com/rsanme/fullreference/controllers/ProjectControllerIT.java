@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Hora: 16:11
  */
 @SpringBootTest
-class ProjectControllerTestIT {
+class ProjectControllerIT {
 
     @Autowired
     WebApplicationContext context;
