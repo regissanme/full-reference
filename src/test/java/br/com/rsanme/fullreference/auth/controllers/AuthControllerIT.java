@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Hora: 14:51
  */
 @SpringBootTest
-class AuthControllerTestIT {
+class AuthControllerIT {
 
     @Autowired
     WebApplicationContext context;
