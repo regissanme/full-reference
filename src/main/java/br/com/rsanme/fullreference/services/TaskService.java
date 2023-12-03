@@ -4,8 +4,6 @@ import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import br.com.rsanme.fullreference.models.Task;
 import br.com.rsanme.fullreference.repositories.TaskRepository;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;

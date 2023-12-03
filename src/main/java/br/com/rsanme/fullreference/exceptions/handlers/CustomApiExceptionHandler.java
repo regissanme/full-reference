@@ -1,6 +1,5 @@
 package br.com.rsanme.fullreference.exceptions.handlers;
 
-import br.com.rsanme.fullreference.exceptions.BusinessException;
 import br.com.rsanme.fullreference.exceptions.CustomEntityAlreadyExists;
 import br.com.rsanme.fullreference.exceptions.CustomEntityNotFoundException;
 import lombok.AllArgsConstructor;

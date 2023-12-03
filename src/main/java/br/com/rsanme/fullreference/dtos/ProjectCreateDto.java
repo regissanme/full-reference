@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Data
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProjectCreateDto {
 
     @NotBlank
